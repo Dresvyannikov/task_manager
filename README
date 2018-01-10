@@ -6,3 +6,4 @@
 Необходимые пакеты:
 python2
 flask
+flask-WTF
