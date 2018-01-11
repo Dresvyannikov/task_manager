@@ -2,20 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from flask_wtf import FlaskForm
-from wtforms import StringField
-from wtforms import BooleanField
-from wtforms import PasswordField
-from wtforms import SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
-
-import sys
-
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Login', validators=[DataRequired()])
-    password = PasswordField('Passwd', validators=[DataRequired()])
-    remember_me = BooleanField('Remember me', default=False)
-    submit = SubmitField('Sign in')
+    username = StringField(u'Имя пользователя', validators=[DataRequired()])
+    password = PasswordField(u'Пароль', validators=[DataRequired()])
+    remember_me = BooleanField(u'Запомнить меня')
+    submit = SubmitField(u'Войти')
