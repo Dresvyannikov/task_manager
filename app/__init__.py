@@ -13,8 +13,6 @@ from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
 app.config.from_object(Config)  # Задание конфигурации приложения
-# TODO: нет переключения в debug, возможно нужно сделать через Config
-app.debug = True   # Флаг включения debug mode
 
 login = LoginManager(app)
 login.login_view = 'login'  # Указание какой route использовать при login
