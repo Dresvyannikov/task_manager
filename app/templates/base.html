@@ -1,12 +1,23 @@
-<html>
-    <head>
-        {% if title %}
-        <title>{{ title }} - TaskManager</title>
-        {% else %}
-        <title>Welcome to TaskManager</title>
-        {% endif %}
-    </head>
-    <body>
+{% block doc -%}
+<!DOCTYPE html>
+<html{% block html_attribs %}{% endblock html_attribs %}>
+{%- block html %}
+  <head>
+    {%- block head %}
+    <title>{% block title %}{{title|default}}{% endblock title %}</title>
+
+    {%- block metas %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {%- endblock metas %}
+
+    {%- block styles %}
+    <!-- Bootstrap -->
+    <link href="static/css/bootstrap.css" rel="stylesheet">
+    {%- endblock styles %}
+    {%- endblock head %}
+  </head>
+  <body{% block body_attribs %}{% endblock body_attribs %}>
+    {% block body -%}
         <div>
             TaskManager:
             <a href="{{ url_for('index') }}">Home</a>
@@ -31,6 +42,19 @@
         </ul>
         {% endif %}
         {% endwith %}
-        {% block content %}{% endblock %}
-    </body>
+
+    {% block navbar %}
+    {%- endblock navbar %}
+    {% block content -%}
+    {%- endblock content %}
+
+
+    {% block scripts %}
+    <script src="static/ls/jquery.js"></script>
+    <script src="static/js/bootstrap.js"></script>
+    {%- endblock scripts %}
+    {%- endblock body %}
+  </body>
+{%- endblock html %}
 </html>
+{% endblock doc -%}

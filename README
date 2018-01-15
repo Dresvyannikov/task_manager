@@ -11,3 +11,7 @@ python3-flaskext.wtf
 python3-flask-sqlalchemy
 python3-flask-migrate
 flask-login
+
+flask-bootstrap
+dominate
+visitor
