@@ -12,7 +12,7 @@
 
     {%- block styles %}
     <!-- Bootstrap -->
-    <link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet">
+    <link href="static/css/bootstrap.css" rel="stylesheet">
     {%- endblock styles %}
     {%- endblock head %}
   </head>
@@ -20,12 +20,13 @@
     {% block body -%}
     {% block navbar %}
     {%- endblock navbar %}
+
     {% block content -%}
     {%- endblock content %}
 
     {% block scripts %}
-    <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
-    <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap')}}"></script>
+    <script src="static/jquery.js"></script>
+    <script src="static/js/bootstrap.js"></script>
     {%- endblock scripts %}
     {%- endblock body %}
   </body>
