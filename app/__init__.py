@@ -23,9 +23,12 @@ migrate = Migrate(app, db)
 from app import routes, models
 
 # Проверка заполненой таблицы, при первом запуске на новой машине
-if not models.Role.query.all():
-    admin = models.Role(user_role='admin')
-    user = models.Role(user_role='user')
-    db.session.add(admin)
-    db.session.add(user)
-    db.session.commit()
+try:
+    if not models.Role.query.all():
+        admin = models.Role(user_role='admin')
+        user = models.Role(user_role='user')
+        db.session.add(admin)
+        db.session.add(user)
+        db.session.commit()
+except:
+    print('Таблицы Role не существует')

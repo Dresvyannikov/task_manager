@@ -28,8 +28,12 @@ class RegistrationForm(FlaskForm):
     password = PasswordField("Пароль", validators=[DataRequired(message="Отсутствует пароль")])
     password2 = PasswordField("Повторите пароль", validators=[DataRequired(message="Повторите пароль"),
                                                                EqualTo('password', message="Нет совпадения паролей")])
-    select_role = SelectField("Тип пользователя: ", choices=[(str(role.id),
-                                                              role.user_role) for role in Role.query.all()])
+    try:
+        select_role = SelectField("Тип пользователя: ", choices=[(str(role.id),
+                                                                  role.user_role) for role in Role.query.all()])
+    except:
+        select_role = []
+
     submit = SubmitField("Зарегистрировать")
 
     def validate_username(self, username):
