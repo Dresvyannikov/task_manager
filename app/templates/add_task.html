@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block headcontent %}
+    {{ dropzone.load() }}
+    {{ dropzone.style('border: 2px dashed #99949B; margin: 10%; min-height: 400px;') }}
+{% endblock %}
+
+{% block app_content %}
+
+        {{ dropzone.create(action_view='add_task') }}
+        {% for error in dropzone.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+
+{% endblock %}

@@ -9,6 +9,7 @@ from flask_migrate import Migrate
 from config import Config
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
+from flask_dropzone import Dropzone
 
 
 app = Flask(__name__)
@@ -18,7 +19,10 @@ login = LoginManager(app)
 login.login_view = 'login'  # Указание какой route использовать при login
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
 Bootstrap(app)
+
+dropzone = Dropzone(app)
 
 from app import routes, models
 

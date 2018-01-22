@@ -17,6 +17,7 @@ from flask_login import login_user
 from flask_login import logout_user
 from flask_login import login_required
 from werkzeug.urls import url_parse
+import os
 
 
 @app.route('/')
@@ -68,6 +69,7 @@ def logout():
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
@@ -85,3 +87,16 @@ def register():
         return redirect(url_for('index'))
     return render_template('register.html', title="Регистрация", form=form)
 
+
+@app.route('/add_task', methods=['GET', 'POST'])
+def add_task():
+    if request.method == 'POST':
+        files = request.files
+        for key, file in files.items():
+            if os.path.isdir(app.config['UPLOADED_PATH']):
+                file.save(os.path.join(app.config['UPLOADED_PATH'], file.filename))
+            else:
+                os.mkdir(app.config['UPLOADED_PATH'])
+                file.save(os.path.join(app.config['UPLOADED_PATH'], file.filename))
+
+    return render_template('add_task.html', title="Новая задача")
