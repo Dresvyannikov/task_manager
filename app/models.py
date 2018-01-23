@@ -19,7 +19,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    posts = db.relationship('Post', backref='author', lazy='dynamic')
+    posts = db.relationship('Task', backref='author', lazy='dynamic')
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
 
     # Пример отображения объектов для отладки
@@ -39,7 +39,7 @@ def load_user(id):  # Пользовательский загрузчик для
     return User.query.get(int(id))
 
 
-class Post(db.Model):
+class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DATETIME, index=True, default=datetime.utcnow)
@@ -47,7 +47,7 @@ class Post(db.Model):
 
     # Пример отображения объектов для отладки
     def __repr__(self):
-        return '<Post {}>'.format(self.body)
+        return '<Task {}>'.format(self.body)
 
 
 class Role(db.Model):

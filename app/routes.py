@@ -10,6 +10,7 @@ from app import app
 from app import db
 from app.forms import LoginForm
 from app.forms import RegistrationForm
+from app.forms import TaskForm
 from app.models import User
 from app.models import Role
 from flask_login import current_user
@@ -48,7 +49,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash("Ошибка в имени пользователи или неверный пароль")
+            flash("Ошибка в имени пользователя или неверный пароль")
             return redirect(url_for('login'))
 
         login_user(user, remember=form.remember_me.data)
@@ -89,7 +90,9 @@ def register():
 
 
 @app.route('/add_task', methods=['GET', 'POST'])
+# @login_required
 def add_task():
+    form = TaskForm()
     if request.method == 'POST':
         files = request.files
         for key, file in files.items():
@@ -99,4 +102,5 @@ def add_task():
                 os.mkdir(app.config['UPLOADED_PATH'])
                 file.save(os.path.join(app.config['UPLOADED_PATH'], file.filename))
 
-    return render_template('add_task.html', title="Новая задача")
+    return render_template('add_task.html', title="Новая задача", form=form)
+

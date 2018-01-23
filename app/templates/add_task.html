@@ -3,13 +3,34 @@
 {% block headcontent %}
     {{ dropzone.load() }}
     {{ dropzone.style('border: 2px dashed #99949B; margin: 10%; min-height: 400px;') }}
+
 {% endblock %}
 
 {% block app_content %}
 
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.comment.label }}<br>
+            {{ form.comment(size=64) }}<br>
+        </p>
+
+        <p>
+            {{ form.modes.label }}<br>
+            {{ form.modes() }}<br>
+            {% for error in form.modes.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p>{{ form.submit() }}</p>
+    </form>
+
+    <div>
         {{ dropzone.create(action_view='add_task') }}
         {% for error in dropzone.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
+    </div>
 
 {% endblock %}
