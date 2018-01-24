@@ -6,7 +6,15 @@
     {% else %}
     <h1>Добро пожаловать! </h1>
     {% endif %}
-    {% for post in posts %}
-    <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
+    {% for task in tasks %}
+    <div>
+        <p>
+            Задача № {{ task.id }}.
+            Time reg: <b>{{ task.timestamp}}</b>
+            Mode: <b> {{ task.mode.name }} </b>
+            Author: <b> {{ task.author.username }}</b>
+            Comment: <b> {{ task.comment }}</b>
+        </p>
+    </div>
     {% endfor %}
 {% endblock %}

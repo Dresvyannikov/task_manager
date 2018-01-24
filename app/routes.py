@@ -30,18 +30,9 @@ import shutil
 # @login_required
 def index():
     # хард код примера будущих задач
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
+    tasks = Task.query.all()
 
-    return render_template('index.html', title="Главная", posts=posts)
+    return render_template('index.html', title="Главная", tasks=tasks)
 
 
 @app.route('/login', methods=['GET', 'POST'])
