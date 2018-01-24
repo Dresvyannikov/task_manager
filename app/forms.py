@@ -61,8 +61,7 @@ class MultiCheckboxField(SelectMultipleField):
 class TaskForm(FlaskForm):
     try:
         choices = [(str(mode.id), mode.name) for mode in Mode.query.all()]
-        choices.append(("all", "Все"))
-        modes = MultiCheckboxField("Режимы: ", choices=choices, validators=[DataRequired("Выберите режим")])
+        modes = MultiCheckboxField("Выбор режима: ", choices=choices, validators=[DataRequired("Выберите режим")])
     except:
         modes = []
     comment = StringField("Комментарий к заданию:")

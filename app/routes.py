@@ -13,17 +13,21 @@ from app.forms import RegistrationForm
 from app.forms import TaskForm
 from app.models import User
 from app.models import Role
+from app.models import Task
+from app.models import Mode
 from flask_login import current_user
 from flask_login import login_user
 from flask_login import logout_user
 from flask_login import login_required
 from werkzeug.urls import url_parse
 import os
+from datetime import datetime
+import shutil
 
 
 @app.route('/')
 @app.route('/index')
-@login_required
+# @login_required
 def index():
     # хард код примера будущих задач
     posts = [
@@ -92,18 +96,33 @@ def register():
 @app.route('/add_task', methods=['GET', 'POST'])
 @login_required
 def add_task():
+    path_upload = os.path.join(app.config['UPLOADED_PATH'], "new_task")
 
+    # загрузка файлов из dropzone
     if request.method == 'POST':
         files = request.files
         for key, file in files.items():
-            if os.path.isdir(app.config['UPLOADED_PATH']):
-                file.save(os.path.join(app.config['UPLOADED_PATH'], file.filename))
-            else:
-                os.mkdir(app.config['UPLOADED_PATH'])
-                file.save(os.path.join(app.config['UPLOADED_PATH'], file.filename))
+            # проверка существования каталога
+            if not os.path.isdir(path_upload):
+                os.makedirs(path_upload)
+            file.save(os.path.join(path_upload, file.filename))
 
     form = TaskForm()
     if form.validate_on_submit():
+        new_tasks = list()
+        for mode in form.modes.data:
+            # для записи в папку используем iso 8601 фрмат
+            dirname = datetime.now().isoformat()
+            task = Task(comment=form.comment.data)
+            task.mode = Mode.query.get(int(mode))
+            task.author = current_user
+            path = os.path.join(os.path.realpath(app.config['UPLOADED_PATH']), "tasks", dirname)
+            task.files = path
+            shutil.copytree(path_upload, path)
+            new_tasks.append(task)
+        shutil.rmtree(path_upload)
+        db.session.add_all(new_tasks)
+        db.session.commit()
         flash("Успешная регистрация задания")
         return redirect(url_for('index'))
 

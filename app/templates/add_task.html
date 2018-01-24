@@ -21,6 +21,16 @@
 {% endblock %}
 
 {% block app_content %}
+
+    <script language="JavaScript">
+        function toggle(sourse) {
+            checkboxes = document.getElementsByName('modes');
+            for (var i=0, n=checkboxes.length; i<n;i++){
+                checkboxes[i].checked = sourse.checked;
+            }
+        }
+    </script>
+
     <div id="conteiner">
         <form action="" method="post" id="form">
             {{ form.hidden_tag() }}
@@ -28,19 +38,17 @@
                 {{ form.comment.label }}<br>
                 {{ form.comment(size=64) }}<br>
             </p>
-
-            <p>
-                {{ form.modes.label }}<br>
+                <input id="modes-all" name="modes_all" type="checkbox" value="all" onclick="toggle(this)"> <label for="modes-all">Выбрать режимы:</label>
                 {{ form.modes() }}
                 {% for error in form.modes.errors %}
                 <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
-            </p>
 
             <p>{{ form.submit() }}</p>
         </form>
 
         <div id="dropright">
+
             {{ dropzone.create(action_view='add_task') }}
             {% for error in dropzone.errors %}
             <span style="color: red;">{{ error }}</span>
