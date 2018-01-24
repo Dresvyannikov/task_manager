@@ -10,11 +10,14 @@ from wtforms import SelectMultipleField
 from wtforms import StringField
 from wtforms.validators import EqualTo
 from wtforms.validators import DataRequired
+from wtforms.validators import InputRequired
+
 from wtforms.validators import Email
 from wtforms.validators import ValidationError
 from app.models import User
 from app.models import Role
-from  wtforms import widgets
+from app.models import Mode
+from wtforms import widgets
 
 
 class LoginForm(FlaskForm):
@@ -31,8 +34,12 @@ class RegistrationForm(FlaskForm):
     password = PasswordField("Пароль", validators=[DataRequired(message="Отсутствует пароль")])
     password2 = PasswordField("Повторите пароль", validators=[DataRequired(message="Повторите пароль"),
                                                                EqualTo('password', message="Нет совпадения паролей")])
-    select_role = SelectField("Тип пользователя: ", choices=[(str(role.id),
-                                                              role.user_role) for role in Role.query.all()])
+    try:
+        select_role = SelectField("Тип пользователя: ", choices=[(str(role.id),
+                                                                  role.user_role) for role in Role.query.all()])
+    except:
+        select_role = []
+
     submit = SubmitField("Зарегистрировать")
 
     def validate_username(self, username):
@@ -52,6 +59,11 @@ class MultiCheckboxField(SelectMultipleField):
 
 
 class TaskForm(FlaskForm):
-    modes = MultiCheckboxField("Режимы: ", choices=[(str(role.id),role.user_role) for role in Role.query.all()])
-    comment = StringField("Комментарий к заданию")
+    try:
+        choices = [(str(mode.id), mode.name) for mode in Mode.query.all()]
+        choices.append(("all", "Все"))
+        modes = MultiCheckboxField("Режимы: ", choices=choices, validators=[DataRequired("Выберите режим")])
+    except:
+        modes = []
+    comment = StringField("Комментарий к заданию:")
     submit = SubmitField("Отправить")

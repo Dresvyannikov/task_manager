@@ -90,9 +90,9 @@ def register():
 
 
 @app.route('/add_task', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def add_task():
-    form = TaskForm()
+
     if request.method == 'POST':
         files = request.files
         for key, file in files.items():
@@ -101,6 +101,11 @@ def add_task():
             else:
                 os.mkdir(app.config['UPLOADED_PATH'])
                 file.save(os.path.join(app.config['UPLOADED_PATH'], file.filename))
+
+    form = TaskForm()
+    if form.validate_on_submit():
+        flash("Успешная регистрация задания")
+        return redirect(url_for('index'))
 
     return render_template('add_task.html', title="Новая задача", form=form)
 

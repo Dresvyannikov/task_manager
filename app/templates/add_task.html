@@ -4,33 +4,48 @@
     {{ dropzone.load() }}
     {{ dropzone.style('border: 2px dashed #99949B; margin: 10%; min-height: 400px;') }}
 
+    <style type="text/css">
+        #form{
+            position: absolute;
+            left: 10%;
+            width: 50%;
+
+        }
+        #dropright{
+            position: absolute;
+            right: 10%;
+            width: 50%;
+        }
+    </style>
+
 {% endblock %}
 
 {% block app_content %}
+    <div id="conteiner">
+        <form action="" method="post" id="form">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.comment.label }}<br>
+                {{ form.comment(size=64) }}<br>
+            </p>
 
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.comment.label }}<br>
-            {{ form.comment(size=64) }}<br>
-        </p>
+            <p>
+                {{ form.modes.label }}<br>
+                {{ form.modes() }}
+                {% for error in form.modes.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
 
-        <p>
-            {{ form.modes.label }}<br>
-            {{ form.modes() }}<br>
-            {% for error in form.modes.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+            <p>{{ form.submit() }}</p>
+        </form>
+
+        <div id="dropright">
+            {{ dropzone.create(action_view='add_task') }}
+            {% for error in dropzone.errors %}
+            <span style="color: red;">{{ error }}</span>
             {% endfor %}
-        </p>
-
-        <p>{{ form.submit() }}</p>
-    </form>
-
-    <div>
-        {{ dropzone.create(action_view='add_task') }}
-        {% for error in dropzone.errors %}
-        <span style="color: red;">{{ error }}</span>
-        {% endfor %}
+        </div>
     </div>
 
 {% endblock %}

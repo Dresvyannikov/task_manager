@@ -19,7 +19,7 @@ class Config:
     DROPZONE_INPUT_NAME = 'file'
     DROPZONE_SERVE_LOCAL = True
 
-    DROPZONE_DEFAULT_MESSAGE = "Перетащите файлы для загрузки"
+    DROPZONE_DEFAULT_MESSAGE = "Перетащите файлы для задания"
     DROPZONE_INVALID_FILE_TYPE = "Вы не можете загружать такой формат файлов"
     DROPZONE_FILE_TOO_BIG = "Размер файла большой {{filesize}}. Допустимый максимальный размер: {{maxFilesize}}Мб."
     DROPZONE_BROWSER_UNSUPPORTED = "Выш браузер не поддерживает систему drag'n'drop, необходимо обновить"
