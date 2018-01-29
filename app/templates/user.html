@@ -3,8 +3,9 @@
 {% block app_content %}
 
     <h1>Профиль пользователя: {{ user.username }}</h1>
+    <div>Почта: {{ user.email }}</div>
     {% if current_user == user %}
-    <a href="{{ url_for('edit_profile') }}">Настройки</a>
+    <a href="{{ url_for('edit_profile') }}">Редактировать профиль</a>
     {% endif %}
 
     {% include '_tasks_table.html' %}
