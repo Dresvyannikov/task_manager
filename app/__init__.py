@@ -28,7 +28,7 @@ Bootstrap(app)
 
 dropzone = Dropzone(app)
 
-from app import routes, models
+from app import routes, models, errors
 
 
 # Проверка заполненой таблицы, при первом запуске на новой машине

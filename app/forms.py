@@ -66,3 +66,13 @@ class TaskForm(FlaskForm):
         modes = []
     comment = StringField("Комментарий к заданию:")
     submit = SubmitField("Отправить")
+
+
+class EditProfileForm(FlaskForm):
+    username = StringField('Имя пользователя', validators=[DataRequired()])
+    submit = SubmitField('Изменить')
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user is not None:
+            raise ValidationError("Пользователь существует")

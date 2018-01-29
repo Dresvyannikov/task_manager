@@ -11,6 +11,7 @@ from app import db
 from app.forms import LoginForm
 from app.forms import RegistrationForm
 from app.forms import TaskForm
+from app.forms import EditProfileForm
 from app.models import User
 from app.models import Role
 from app.models import Task
@@ -118,4 +119,25 @@ def add_task():
         return redirect(url_for('index'))
 
     return render_template('add_task.html', title="Новая задача", form=form)
+
+
+@app.route('/user/<username>')
+@login_required
+def user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    return render_template('user.html', user=user, tasks=user.tasks)
+
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        db.session.commit()
+        flash("Данные профиля успешно изменены")
+        return redirect(url_for('edit_profile'))
+    elif request.method == "GET":
+        form.username.data = current_user.username
+    return render_template('edit_profile.html', title='Редактор профиля', form=form)
 

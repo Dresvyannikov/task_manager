@@ -63,14 +63,13 @@ class Task(db.Model):
                                                                                   comment=self.comment)
 
 
-
 class Role(db.Model):
     """
     Модель описывает таблицу ролей, которая является справочной таблицей.
     У теблицы есть связь ОТО [one-to-one](один-к-одному) с таблицей User поле priority
     """
     id = db.Column(db.Integer, primary_key=True)
-    user_role = db.Column(db.String(32), index=True, unique=True)
+    user_role = db.Column(db.String(32), index=True, unique=True)  # уникальное(unique)
 
     user_id = db.relationship('User', backref='priority', uselist=False)
 

@@ -1,20 +1,8 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    {% if current_user.is_authenticated %}
-    <h1>Добро пожаловать, {{ current_user.username }}!</h1>
-    {% else %}
-    <h1>Добро пожаловать! </h1>
-    {% endif %}
-    {% for task in tasks %}
-    <div>
-        <p>
-            Задача № {{ task.id }}.
-            Time reg: <b>{{ task.timestamp}}</b>
-            Mode: <b> {{ task.mode.name }} </b>
-            Author: <b> {{ task.author.username }}</b>
-            Comment: <b> {{ task.comment }}</b>
-        </p>
-    </div>
-    {% endfor %}
+
+    <h1>Очередь задач</h1>
+    {% include '_tasks_table.html' %}
+
 {% endblock %}
