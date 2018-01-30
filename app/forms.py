@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from flask_wtf import FlaskForm
@@ -10,8 +10,7 @@ from wtforms import SelectMultipleField
 from wtforms import StringField
 from wtforms.validators import EqualTo
 from wtforms.validators import DataRequired
-from wtforms.validators import InputRequired
-
+from flask_login import current_user
 from wtforms.validators import Email
 from wtforms.validators import ValidationError
 from app.models import User
@@ -69,10 +68,41 @@ class TaskForm(FlaskForm):
 
 
 class EditProfileForm(FlaskForm):
-    username = StringField('Имя пользователя', validators=[DataRequired()])
+    username = StringField('Имя пользователя:', validators=[DataRequired()])
+    email = StringField("Почта:", validators=[DataRequired("Введите почтовый адрес"),
+                                             Email(message="Неверный формат почты")])
+    password = PasswordField("Новый пароль:", validators=[DataRequired(message="Отсутствует пароль")])
+    password2 = PasswordField("Повторите новый пароль:", validators=[DataRequired(message="Повторите пароль"),
+                                                               EqualTo('password', message="Нет совпадения паролей")])
+    old_password = PasswordField("Старый пароль:", validators=[DataRequired(message="Отсутствует пароль")])
     submit = SubmitField('Изменить')
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
-        if user is not None:
+        if not user == current_user:
             raise ValidationError("Пользователь существует")
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is not None:
+            raise ValidationError("Эта почта уже зарегистрирована")
+
+    def validate_old_password(self, old_password):
+        if not current_user.check_password(old_password.data):
+            raise ValidationError("Неверный пароль")
+
+
+class PasswordRecoveryForm(FlaskForm):
+    email = StringField("Почта:", validators=[DataRequired("Введите почтовый адрес"),
+                                              Email(message="Неверный формат почты")])
+    submit_email = SubmitField('Отправить')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is None:
+            raise ValidationError("Эта почта не зарегистрирована")
+
+
+class ControleCode(FlaskForm):
+    code = StringField("Контрольный код:", validators=[DataRequired("Введите контрольный код")])
+    submit_code = SubmitField('Подтвердить')

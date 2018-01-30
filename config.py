@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -33,3 +33,10 @@ class Config:
             'text': 'text/*',
             'app': 'application/*'
         }
+
+    MAIL_SERVER = os.environ.get('MAIL_SERVER') or '192.168.0.111'
+    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'Taskmanager@otdel332.avt'
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or '332332333'
+    MAIL_ADMINS = ['dresvyannikov-eo@otdel332.avt']  # TODO: брать из БД

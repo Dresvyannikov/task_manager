@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from flask import render_template
@@ -7,11 +7,14 @@ from flask import redirect
 from flask import url_for
 from flask import request
 from app import app
+from app import mail
 from app import db
 from app.forms import LoginForm
 from app.forms import RegistrationForm
 from app.forms import TaskForm
 from app.forms import EditProfileForm
+from app.forms import PasswordRecoveryForm
+from app.forms import ControleCode
 from app.models import User
 from app.models import Role
 from app.models import Task
@@ -24,6 +27,8 @@ from werkzeug.urls import url_parse
 import os
 from datetime import datetime
 import shutil
+from flask_mail import Message
+import random
 
 
 @app.route('/')
@@ -134,6 +139,8 @@ def edit_profile():
     form = EditProfileForm()
     if form.validate_on_submit():
         current_user.username = form.username.data
+        current_user.email = form.email.data
+        current_user.set_password(form.password.data)
         db.session.commit()
         flash("Данные профиля успешно изменены")
         return redirect(url_for('edit_profile'))
@@ -141,3 +148,51 @@ def edit_profile():
         form.username.data = current_user.username
     return render_template('edit_profile.html', title='Редактор профиля', form=form)
 
+
+@app.route('/password_recovery', methods=['GET', 'POST'])
+def password_recovery():
+    email_form = PasswordRecoveryForm()
+    code_form = ControleCode()
+
+    args = {'email': True,
+            'code': False}
+
+    if email_form.validate_on_submit() and email_form.submit_email.data:
+        msg = Message('Восстановление пароля', sender='Taskmanager@otdel332.avt', recipients=[email_form.email.data])
+        code = get_code()
+        messege = 'Код подтверждения:<b>{code}</b>'.format(code=code)
+        msg.html = messege
+        mail.send(msg)
+        args = {'email': False,
+                'code': True}
+        flash("На Ваш почтовый адресс отправлено письмо с кодом")
+        user = User.query.filter_by(email=email_form.email.data).first()
+        user.code = code
+        db.session.commit()
+
+    if code_form.validate_on_submit() and code_form.submit_code.data:
+        user = User.query.filter_by(code=code_form.code.data).first_or_404()
+        if user.code == code_form.code.data:
+            password = random.randint(1000, 9999)
+            msg = Message('Новый пароль', sender='Taskmanager@otdel332.avt',
+                          recipients=[user.email])
+            messege = 'Ваш новый пароль:<b>{password}</b>'.format(password=password)
+            msg.html = messege
+            mail.send(msg)
+            user.set_password(str(password))
+            db.session.commit()
+            flash("Ваш пароль успешно изменен")
+            return redirect(url_for('edit_profile'))
+        else:
+            flash("Неверный код подтверждения")
+
+    return render_template('password_recovery.html', title='Восстановление пароля',
+                           email_form=email_form, code_form=code_form, args=args)
+
+
+def get_code():
+    code = random.getrandbits(32)
+    if User.query.filter_by(code=code).first() is None:
+        return code
+    else:
+        get_code()

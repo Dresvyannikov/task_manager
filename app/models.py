@@ -19,6 +19,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
+    code = db.Column(db.String(32), unique=True)  # код подтверждения, нужен для востановления пароля
 
     tasks = db.relationship('Task', backref='author', lazy='dynamic')
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
