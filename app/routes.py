@@ -10,32 +10,29 @@ from app import app
 from app import db
 from app.forms import LoginForm
 from app.forms import RegistrationForm
+from app.forms import TaskForm
 from app.models import User
 from app.models import Role
+from app.models import Task
+from app.models import Mode
 from flask_login import current_user
 from flask_login import login_user
 from flask_login import logout_user
 from flask_login import login_required
 from werkzeug.urls import url_parse
+import os
+from datetime import datetime
+import shutil
 
 
 @app.route('/')
 @app.route('/index')
-@login_required
+# @login_required
 def index():
     # хард код примера будущих задач
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
+    tasks = Task.query.all()
 
-    return render_template('index.html', title="Главная", posts=posts)
+    return render_template('index.html', title="Главная", tasks=tasks)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -47,7 +44,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash("Ошибка в имени пользователи или неверный пароль")
+            flash("Ошибка в имени пользователя или неверный пароль")
             return redirect(url_for('login'))
 
         login_user(user, remember=form.remember_me.data)
@@ -68,6 +65,7 @@ def logout():
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
@@ -84,4 +82,40 @@ def register():
         flash("Успешная регистрация пользователя")
         return redirect(url_for('index'))
     return render_template('register.html', title="Регистрация", form=form)
+
+
+@app.route('/add_task', methods=['GET', 'POST'])
+@login_required
+def add_task():
+    path_upload = os.path.join(app.config['UPLOADED_PATH'], "new_task")
+
+    # загрузка файлов из dropzone
+    if request.method == 'POST':
+        files = request.files
+        for key, file in files.items():
+            # проверка существования каталога
+            if not os.path.isdir(path_upload):
+                os.makedirs(path_upload)
+            file.save(os.path.join(path_upload, file.filename))
+
+    form = TaskForm()
+    if form.validate_on_submit():
+        new_tasks = list()
+        for mode in form.modes.data:
+            # для записи в папку используем iso 8601 фрмат
+            dirname = datetime.now().isoformat()
+            task = Task(comment=form.comment.data)
+            task.mode = Mode.query.get(int(mode))
+            task.author = current_user
+            path = os.path.join(os.path.realpath(app.config['UPLOADED_PATH']), "tasks", dirname)
+            task.files = path
+            shutil.copytree(path_upload, path)
+            new_tasks.append(task)
+        shutil.rmtree(path_upload)
+        db.session.add_all(new_tasks)
+        db.session.commit()
+        flash("Успешная регистрация задания")
+        return redirect(url_for('index'))
+
+    return render_template('add_task.html', title="Новая задача", form=form)
 

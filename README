@@ -21,3 +21,5 @@ flask-login
 flask-bootstrap
 dominate
 visitor
+
+flask-dropzone
