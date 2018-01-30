@@ -10,6 +10,7 @@ from config import Config
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 from flask_dropzone import Dropzone
+from flask_mail import Mail
 
 
 app = Flask(__name__)
@@ -27,6 +28,8 @@ else:
 Bootstrap(app)
 
 dropzone = Dropzone(app)
+
+mail = Mail(app)
 
 from app import routes, models, errors
 

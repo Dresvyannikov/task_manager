@@ -90,3 +90,19 @@ class EditProfileForm(FlaskForm):
     def validate_old_password(self, old_password):
         if not current_user.check_password(old_password.data):
             raise ValidationError("Неверный пароль")
+
+
+class PasswordRecoveryForm(FlaskForm):
+    email = StringField("Почта:", validators=[DataRequired("Введите почтовый адрес"),
+                                              Email(message="Неверный формат почты")])
+    submit_email = SubmitField('Отправить')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is None:
+            raise ValidationError("Эта почта не зарегистрирована")
+
+
+class ControleCode(FlaskForm):
+    code = StringField("Контрольный код:", validators=[DataRequired("Введите контрольный код")])
+    submit_code = SubmitField('Подтвердить')
