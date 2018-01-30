@@ -1,0 +1,19 @@
+<table class="table table-striped">
+    <tr class="row">
+        <th> № </th>
+        <th> Time reg </th>
+        <th> Mode </th>
+        <th> Author </th>
+        <th> Comment: </th>
+    </tr>
+    {% for task in tasks %}
+    <tr class="row">
+        <th>{{ task.id }}.</th>
+        <th> {{ task.timestamp}} </th>
+        <th>  {{ task.mode.name }}  </th>
+        <th> <a href="{{ url_for('user', username=task.author.username) }}">{{ task.author.username }}</a> </th>
+        <th>  {{ task.comment }} </th>
+    </tr>
+    {% endfor %}
+</table>
+

@@ -12,7 +12,7 @@
 
     {%- block styles %}
     <!-- Bootstrap -->
-    <link href="static/css/bootstrap.css" rel="stylesheet">
+    <link href="{{ url_for('static',filename='css/bootstrap.css') }}" rel="stylesheet">
     {%- endblock styles %}
     {%- endblock head %}
     {% block headcontent %}{% endblock %}
@@ -26,8 +26,8 @@
     {%- endblock content %}
 
     {% block scripts %}
-    <script src="static/jquery.js"></script>
-    <script src="static/js/bootstrap.js"></script>
+    <script src="{{ url_for('static',filename='jquery.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.js') }}"></script>
     {%- endblock scripts %}
     {%- endblock body %}
   </body>

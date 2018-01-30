@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+
+    <h1>Редактирование профиля</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.username.lable }}
+            {{ form.username }}
+        </p>
+            {% for error in form.username.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        <p>
+            {{ form.submit}}
+        </p>
+    </form>
+
+    {% include '_tasks_table.html' %}
+
+{% endblock %}
