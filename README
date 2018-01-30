@@ -16,11 +16,13 @@ python3-flask
 python3-flask-wtf-master
 python3-flask-sqlalchemy
 python3-flask-migrate
-flask-login-master
+flask-login
 
 flask-dropzone
 flask-bootstrap
 dominate
 visitor
+
+flask-dropzone
 
 flask-mail (для windows: pip install --no-deps lamson cherdet flask-mail)
