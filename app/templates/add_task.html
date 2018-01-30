@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block headcontent %}
+    {{ dropzone.load() }}
+    {{ dropzone.style('border: 2px dashed #99949B; margin: 10%; min-height: 400px;') }}
+
+    <style type="text/css">
+        #form{
+            position: absolute;
+            left: 10%;
+            width: 50%;
+
+        }
+        #dropright{
+            position: absolute;
+            right: 10%;
+            width: 50%;
+        }
+    </style>
+
+{% endblock %}
+
+{% block app_content %}
+
+    <script language="JavaScript">
+        function toggle(sourse) {
+            checkboxes = document.getElementsByName('modes');
+            for (var i=0, n=checkboxes.length; i<n;i++){
+                checkboxes[i].checked = sourse.checked;
+            }
+        }
+    </script>
+
+    <div id="conteiner">
+        <form action="" method="post" id="form">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.comment.label }}<br>
+                {{ form.comment(size=64) }}<br>
+            </p>
+                <input id="modes-all" name="modes_all" type="checkbox" value="all" onclick="toggle(this)"> <label for="modes-all">Выбрать режимы:</label>
+                {{ form.modes() }}
+                {% for error in form.modes.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+
+            <p>{{ form.submit() }}</p>
+        </form>
+
+        <div id="dropright">
+
+            {{ dropzone.create(action_view='add_task') }}
+            {% for error in dropzone.errors %}
+            <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
