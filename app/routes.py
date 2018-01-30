@@ -35,7 +35,7 @@ def index():
         }
     ]
 
-    return render_template('index.html', title=u'Главная', posts=posts)
+    return render_template('index.html', title="Главная", posts=posts)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -58,7 +58,7 @@ def login():
             next_page = url_for('index')
         return redirect(next_page)
 
-    return render_template('login.html',  title=u'Вход', form=form)
+    return render_template('login.html',  title="Вход", form=form)
 
 
 @app.route('/logout')
