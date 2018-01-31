@@ -5,14 +5,18 @@
         <th> Mode </th>
         <th> Author </th>
         <th> Comment: </th>
+        <th> Files: </th>
     </tr>
     {% for task in tasks %}
     <tr class="row">
-        <th>{{ task.id }}.</th>
-        <th> {{ task.timestamp}} </th>
-        <th>  {{ task.mode.name }}  </th>
-        <th> <a href="{{ url_for('user', username=task.author.username) }}">{{ task.author.username }}</a> </th>
-        <th>  {{ task.comment }} </th>
+        <td>{{ task.id }}.</td>
+        <td> {{ task.timestamp}} </td>
+        <td>  {{ task.mode.name }}  </td>
+        <td> <a href="{{ url_for('user', username=task.author.username) }}">{{ task.author.username }}</a> </td>
+        <td>  {{ task.comment }} </td>
+        <td>  {% for item in task.files_id %}
+                {{ item.name }}
+                {% endfor %} </td>
     </tr>
     {% endfor %}
 </table>
