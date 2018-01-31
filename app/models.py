@@ -110,8 +110,6 @@ class File(db.Model):
     size = db.Column(db.String(32), index=True)
     md5sum = db.Column(db.String(32), index=True)
 
-#    file_id = db.relationship('files_in_task', backref='task', lazy='dynamic')
-
     def __repr__(self):
         return '<File {}>'.format(self.name)
 
