@@ -33,11 +33,8 @@ import random
 
 @app.route('/')
 @app.route('/index')
-# @login_required
 def index():
-    # хард код примера будущих задач
     tasks = Task.query.all()
-
     return render_template('index.html', title="Главная", tasks=tasks)
 
 
@@ -45,7 +42,6 @@ def index():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
-
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()

@@ -22,7 +22,7 @@ from wtforms import widgets
 class LoginForm(FlaskForm):
     username = StringField("Имя пользователя", validators=[DataRequired()])
     password = PasswordField("Пароль", validators=[DataRequired()])
-    remember_me = BooleanField("Запомнить меня")  # TODO: функционал отсутствуует
+    remember_me = BooleanField("Запомнить меня")
     submit = SubmitField("Войти")
 
 
@@ -68,7 +68,7 @@ class TaskForm(FlaskForm):
 
 
 class EditProfileForm(FlaskForm):
-    username = StringField('Имя пользователя:', validators=[DataRequired()])
+    username = StringField('Имя пользователя:', validators=[DataRequired("Введите имя пользователя")])
     email = StringField("Почта:", validators=[DataRequired("Введите почтовый адрес"),
                                              Email(message="Неверный формат почты")])
     password = PasswordField("Новый пароль:", validators=[DataRequired(message="Отсутствует пароль")])
