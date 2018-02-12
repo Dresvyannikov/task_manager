@@ -46,6 +46,7 @@ try:
 except:
     print('Таблицы Role не существует!')
 
+
 try:
     if not models.Mode.query.all():
         ksh = models.Mode(name="КШ")

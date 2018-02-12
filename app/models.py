@@ -7,6 +7,8 @@ from app import login
 from flask_login import UserMixin  # класс для работы с моделью пользователя использую при этом flask_login
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+import os
+from app.utils import md5
 
 
 class User(UserMixin, db.Model):
@@ -41,6 +43,12 @@ def load_user(id):  # Пользовательский загрузчик для
     return User.query.get(int(id))
 
 
+files_in_task = db.Table('files_in_task2', db.Model.metadata,
+                         db.Column('task_id', db.Integer, db.ForeignKey('task.id')),
+                         db.Column('file_id', db.Integer, db.ForeignKey('file.id'))
+                         )
+
+
 class Task(db.Model):
     """
     Модель описывает таблицу task.
@@ -48,10 +56,11 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.String(140))
     timestamp = db.Column(db.DATETIME, index=True, default=datetime.now)
-    files = db.Column(db.String(320))
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     mode_id = db.Column(db.Integer, db.ForeignKey('mode.id'))
+
+    files_id = db.relationship('File', secondary=files_in_task, backref=db.backref('files_in_task', lazy='dynamic'))
 
     def __init__(self, comment=None):
         self.comment = comment
@@ -59,7 +68,7 @@ class Task(db.Model):
     # Пример отображения объектов для отладки
     def __repr__(self):
         return '<Task {id} {author} {mode} {files} {timestamp} {comment}>'.format(id=self.id, author=self.author,
-                                                                                  mode=self.mode, files=self.files,
+                                                                                  mode=self.mode, files=self.task_id_si,
                                                                                   timestamp=self.timestamp,
                                                                                   comment=self.comment)
 
@@ -91,3 +100,23 @@ class Mode(db.Model):
     # Пример отображения объектов для отладки
     def __repr__(self):
         return '<Mode {}>'.format(self.name)
+
+
+class File(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(32), index=True)
+    path = db.Column(db.String(32), index=True)
+    type = db.Column(db.String(32), index=True)
+    size = db.Column(db.String(32), index=True)
+    md5sum = db.Column(db.String(32), index=True)
+
+    def __repr__(self):
+        return '<File {}>'.format(self.name)
+
+    def add(self, path, file_name):
+        self.name = file_name
+        self.path = path
+        self.type = os.path.splitext(file_name)[1]
+        self.size = os.path.getsize(os.path.join(path, file_name))
+        self.md5sum = md5(os.path.join(path, file_name))
+
