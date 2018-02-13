@@ -31,16 +31,17 @@ dropzone = Dropzone(app)
 
 mail = Mail(app)
 
-from app import routes, models, errors
+from app import routes, models, errors, rest
 
 
+#TODO: вынести или убрать, реализовать через create sqlalchemy
 # Проверка заполненой таблицы, при первом запуске на новой машине
 try:
     if not models.Role.query.all():
         admin = models.Role(user_role='admin')
         user = models.Role(user_role='user')
-        db.session.add(admin)
-        db.session.add(user)
+        remote = models.Role(user_role='remote')
+        db.session.add_all([admin, user, remote])
         db.session.commit()
 
 except:
@@ -56,3 +57,14 @@ try:
         db.session.commit()
 except:
     print('Таблицы Mode не существует!')
+
+try:
+    if not models.Status.query.all():
+        done = models.Status(name="done", name_rus="Выполнено")
+        loaded = models.Status(name="loaded", name_rus="В процессе")
+        queue = models.Status(name="queue", name_rus="В очереди")
+        error = models.Status(name="error", name_rus="Ошибка")
+        db.session.add_all([done, loaded, queue, error])
+        db.session.commit()
+except:
+    print('Таблицы Status не существует!')

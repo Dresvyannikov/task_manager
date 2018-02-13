@@ -62,13 +62,17 @@ class Task(db.Model):
 
     files_id = db.relationship('File', secondary=files_in_task, backref=db.backref('files_in_task', lazy='dynamic'))
 
+    status_id = db.Column(db.Integer, db.ForeignKey('status.id'))
+
+    position_id = db.Column(db.Integer, db.ForeignKey('position.id'))
+
     def __init__(self, comment=None):
         self.comment = comment
 
     # Пример отображения объектов для отладки
     def __repr__(self):
         return '<Task {id} {author} {mode} {files} {timestamp} {comment}>'.format(id=self.id, author=self.author,
-                                                                                  mode=self.mode, files=self.task_id_si,
+                                                                                  mode=self.mode, files=self.files_id,
                                                                                   timestamp=self.timestamp,
                                                                                   comment=self.comment)
 
@@ -120,3 +124,20 @@ class File(db.Model):
         self.size = os.path.getsize(os.path.join(path, file_name))
         self.md5sum = md5(os.path.join(path, file_name))
 
+
+class Status(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(32), index=True)
+    name_rus = db.Column(db.String(32), index=True)
+    task_id = db.relationship('Task', backref='task_status', uselist=False)
+
+    def __repr__(self):
+        return '<Status {}>'.format(self.name)
+
+
+class Position(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(32), index=True)
+
+    def __repr__(self):
+        return '<Position {}>'.format(self.name)
