@@ -62,7 +62,7 @@ class Task(db.Model):
 
     files_id = db.relationship('File', secondary=files_in_task, backref=db.backref('files_in_task', lazy='dynamic'))
 
-    status_id = db.Column(db.Integer, db.ForeignKey('status.id'))
+    state_id = db.Column(db.Integer, db.ForeignKey('state.id'))
 
     position_id = db.Column(db.Integer, db.ForeignKey('position.id'))
 
@@ -125,19 +125,20 @@ class File(db.Model):
         self.md5sum = md5(os.path.join(path, file_name))
 
 
-class Status(db.Model):
+class State(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), index=True)
     name_rus = db.Column(db.String(32), index=True)
-    task_id = db.relationship('Task', backref='task_status', uselist=False)
+    task_id = db.relationship('Task', backref='task_state')
 
     def __repr__(self):
-        return '<Status {}>'.format(self.name)
+        return '<State {}>'.format(self.name)
 
 
 class Position(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), index=True)
+    task_id = db.relationship('Task', backref='task_position')
 
     def __repr__(self):
-        return '<Position {}>'.format(self.name)
+        return '<Position {id} {name}>'.format(id=self.id, name=self.name)

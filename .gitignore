@@ -6,3 +6,4 @@ tas.log*
 venv
 *.py[cod]
 uploaded/
+model.png

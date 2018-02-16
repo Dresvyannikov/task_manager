@@ -20,7 +20,8 @@ from app.models import Role
 from app.models import Task
 from app.models import Mode
 from app.models import File
-from app.models import Status
+from app.models import State
+from app.models import Position
 from flask_login import current_user
 from flask_login import login_user
 from flask_login import logout_user
@@ -104,12 +105,12 @@ def add_task():
     form = TaskForm()
     if form.validate_on_submit():
         for mode in form.modes.data:
-
             task = Task(comment=form.comment.data)
             task.mode = Mode.query.get(int(mode))
             task.author = current_user
+            task.task_state = State.query.filter_by(name='queue').first()
+            task.task_position = Position.query.get(int(form.position.data))
 
-            task.task_status = Status.query.filter_by(name='queue').first()
             db.session.add(task)
             db.session.commit()
 

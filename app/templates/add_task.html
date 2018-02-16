@@ -34,15 +34,22 @@
     <div id="conteiner">
         <form action="" method="post" id="form">
             {{ form.hidden_tag() }}
-            <p>
-                {{ form.comment.label }}<br>
-                {{ form.comment(size=64) }}<br>
-            </p>
-                <input id="modes-all" name="modes_all" type="checkbox" value="all" onclick="toggle(this)"> <label for="modes-all">Выбрать режимы:</label>
-                {{ form.modes() }}
-                {% for error in form.modes.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
+
+            <div>{{ form.comment.label }}</div>
+            <div>{{ form.comment(size=64) }}</div>
+
+            <input id="modes-all" name="modes_all" type="checkbox" value="all" onclick="toggle(this)">
+            <label for="modes-all">Выбрать режимы:</label>
+            {{ form.modes() }}
+            {% for error in form.modes.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+
+            <div>{{ form.position.label }}</div>
+            <div>{{ form.position() }}</div>
+            {% for error in form.position.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
 
             <p>{{ form.submit() }}</p>
         </form>

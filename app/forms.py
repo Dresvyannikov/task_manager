@@ -16,6 +16,7 @@ from wtforms.validators import ValidationError
 from app.models import User
 from app.models import Role
 from app.models import Mode
+from app.models import Position
 from wtforms import widgets
 
 
@@ -63,6 +64,11 @@ class TaskForm(FlaskForm):
         modes = MultiCheckboxField("Выбор режима: ", choices=choices, validators=[DataRequired("Выберите режим")])
     except:
         modes = []
+    try:
+        position = SelectField("Позиция:", choices=[(str(position.id),
+                                                position.name) for position in Position.query.all()])
+    except:
+        position = []
     comment = StringField("Комментарий к заданию:")
     submit = SubmitField("Отправить")
 
