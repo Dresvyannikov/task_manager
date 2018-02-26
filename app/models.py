@@ -28,7 +28,7 @@ class User(UserMixin, db.Model):
 
     # Пример отображения объектов для отладки
     def __repr__(self):
-        return '<User {id} {name} {role} {email}>'.format(id=self.id, name=self.username, email=self.email,
+        return '<User {id} {name} role={role} {email}>'.format(id=self.id, name=self.username, email=self.email,
                                                           role=self.priority.user_role)
 
     def set_password(self, password):
@@ -62,15 +62,20 @@ class Task(db.Model):
 
     files_id = db.relationship('File', secondary=files_in_task, backref=db.backref('files_in_task', lazy='dynamic'))
 
+    state_id = db.Column(db.Integer, db.ForeignKey('state.id'))
+
+    position_id = db.Column(db.Integer, db.ForeignKey('position.id'))
+
     def __init__(self, comment=None):
         self.comment = comment
 
     # Пример отображения объектов для отладки
     def __repr__(self):
-        return '<Task {id} {author} {mode} {files} {timestamp} {comment}>'.format(id=self.id, author=self.author,
-                                                                                  mode=self.mode, files=self.task_id_si,
+        return '<Task {id} {author} {mode} {files} {timestamp} {comment} {state}>'.format(id=self.id, author=self.author,
+                                                                                  mode=self.mode, files=self.files_id,
                                                                                   timestamp=self.timestamp,
-                                                                                  comment=self.comment)
+                                                                                  comment=self.comment,
+                                                                                  state=self.state_id)
 
 
 class Role(db.Model):
@@ -120,3 +125,21 @@ class File(db.Model):
         self.size = os.path.getsize(os.path.join(path, file_name))
         self.md5sum = md5(os.path.join(path, file_name))
 
+
+class State(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(32), index=True)
+    name_rus = db.Column(db.String(32), index=True)
+    task_id = db.relationship('Task', backref='task_state')
+
+    def __repr__(self):
+        return '<State {}>'.format(self.name)
+
+
+class Position(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(32), index=True)
+    task_id = db.relationship('Task', backref='task_position')
+
+    def __repr__(self):
+        return '<Position {id} {name}>'.format(id=self.id, name=self.name)

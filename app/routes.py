@@ -20,6 +20,8 @@ from app.models import Role
 from app.models import Task
 from app.models import Mode
 from app.models import File
+from app.models import State
+from app.models import Position
 from flask_login import current_user
 from flask_login import login_user
 from flask_login import logout_user
@@ -57,7 +59,6 @@ def login():
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
         return redirect(next_page)
-
     return render_template('login.html',  title="Вход", form=form)
 
 
@@ -90,7 +91,7 @@ def register():
 @app.route('/add_task', methods=['GET', 'POST'])
 @login_required
 def add_task():
-    path_upload = os.path.join(app.config['UPLOADED_PATH'], "new_task")
+    path_upload = os.path.join(app.config['UPLOADED_PATH'], "tmp", current_user.username, "new_task")
 
     # загрузка файлов из dropzone
     if request.method == 'POST':
@@ -104,10 +105,12 @@ def add_task():
     form = TaskForm()
     if form.validate_on_submit():
         for mode in form.modes.data:
-
             task = Task(comment=form.comment.data)
             task.mode = Mode.query.get(int(mode))
             task.author = current_user
+            task.task_state = State.query.filter_by(name='queue').first()
+            task.task_position = Position.query.get(int(form.position.data))
+
             db.session.add(task)
             db.session.commit()
 
@@ -115,17 +118,22 @@ def add_task():
             # для записи в папку используем iso 8601 фрмат
             dir_name = datetime.now().isoformat()
             path_to_files = os.path.join(os.path.realpath(app.config['UPLOADED_PATH']), "tasks", dir_name)
-            shutil.copytree(path_upload, path_to_files)
 
-            for file_name in os.listdir(path_to_files):
-                file = File()
-                file.add(path_to_files, file_name)
-                db.session.add(file)
-                db.session.commit()
-                task.files_id.append(file)
-                db.session.commit()
+            if os.path.isdir(path_upload):
+                shutil.copytree(path_upload, path_to_files)
 
-        shutil.rmtree(path_upload)
+            if os.path.isdir(path_to_files):
+                for file_name in os.listdir(path_to_files):
+                    file = File()
+                    file.add(path_to_files, file_name)
+                    db.session.add(file)
+                    db.session.commit()
+                    task.files_id.append(file)
+                    db.session.commit()
+
+        if os.path.isdir(path_upload):
+            shutil.rmtree(path_upload)
+
         flash("Успешная регистрация задания")
         return redirect(url_for('index'))
 

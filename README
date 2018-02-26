@@ -23,6 +23,6 @@ flask-bootstrap
 dominate
 visitor
 
-flask-dropzone
-
 flask-mail (для windows: pip install --no-deps lamson cherdet flask-mail)
+
+flask-restful

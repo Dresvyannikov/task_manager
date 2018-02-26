@@ -4,8 +4,10 @@
         <th> Time reg </th>
         <th> Mode </th>
         <th> Author </th>
-        <th> Comment: </th>
-        <th> Files: </th>
+        <th> Position </th>
+        <th> State </th>
+        <th> Comment </th>
+        <th> Files </th>
     </tr>
     {% for task in tasks %}
     <tr class="row">
@@ -13,6 +15,8 @@
         <td> {{ task.timestamp}} </td>
         <td>  {{ task.mode.name }}  </td>
         <td> <a href="{{ url_for('user', username=task.author.username) }}">{{ task.author.username }}</a> </td>
+        <td> {{ task.task_position.name }} </td>
+        <td> {{ task.task_state.name_rus }} </td>
         <td>  {{ task.comment }} </td>
         <td>  {% for item in task.files_id %}
                 {{ item.name }}
