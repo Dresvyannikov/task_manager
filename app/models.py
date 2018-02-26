@@ -28,7 +28,7 @@ class User(UserMixin, db.Model):
 
     # Пример отображения объектов для отладки
     def __repr__(self):
-        return '<User {id} {name} {role} {email}>'.format(id=self.id, name=self.username, email=self.email,
+        return '<User {id} {name} role={role} {email}>'.format(id=self.id, name=self.username, email=self.email,
                                                           role=self.priority.user_role)
 
     def set_password(self, password):
@@ -71,10 +71,11 @@ class Task(db.Model):
 
     # Пример отображения объектов для отладки
     def __repr__(self):
-        return '<Task {id} {author} {mode} {files} {timestamp} {comment}>'.format(id=self.id, author=self.author,
+        return '<Task {id} {author} {mode} {files} {timestamp} {comment} {state}>'.format(id=self.id, author=self.author,
                                                                                   mode=self.mode, files=self.files_id,
                                                                                   timestamp=self.timestamp,
-                                                                                  comment=self.comment)
+                                                                                  comment=self.comment,
+                                                                                  state=self.state_id)
 
 
 class Role(db.Model):
