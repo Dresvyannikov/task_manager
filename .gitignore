@@ -5,5 +5,6 @@ app.db
 tas.log*
 venv
 *.py[cod]
-uploaded/
+upload
 model.png
+.idea

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Файл инициализации приложения
@@ -31,7 +31,6 @@ Bootstrap(app)
 dropzone = Dropzone(app)
 
 mail = Mail(app)
-
 
 from app import routes, models, errors, rest
 
