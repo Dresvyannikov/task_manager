@@ -1,8 +1,8 @@
 FROM python:3.6-alpine
 
-RUN adduser -D jurnal
+RUN adduser -D journal
 
-WORKDIR /home/jurnal
+WORKDIR /home/journal
 
 COPY requirements.txt requirements.txt
 RUN python -m venv venv
@@ -16,8 +16,8 @@ RUN chmod +x boot.sh
 
 ENV FLASK_APP run.py
 
-RUN chown -R jurnal:jurnal ./
-USER jurnal
+RUN chown -R journal:journal ./
+USER journal
 
 EXPOSE 5000
 ENTRYPOINT ["./boot.sh"]
