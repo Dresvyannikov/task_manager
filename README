@@ -10,31 +10,9 @@ set FLASK_APP=run.py
     flask db
 Для запуска используй flask run
 
-Необходимые расширения:
-python3
-python3-flask
-python3-flask-wtf-master
-python3-flask-sqlalchemy
-python3-flask-migrate
-flask-login
+Зависимости в файле requirements.txt.
 
-flask-dropzone
-flask-bootstrap
-dominate
-visitor
-
-flask-mail (для windows: pip install --no-deps lamson cherdet flask-mail)
-
-flask-restful
-// перед работой с сервером лучше прочитать статью https://habr.com/ru/post/353234/
-3) docker run --name tas -d -p 8000:5000 --rm -e SECRET_KEY=my-secret-key \
-    -e MAIL_SERVER=smtp.googlemail.com -e MAIL_PORT=587 -e MAIL_USE_TLS=true \
-    -e MAIL_USERNAME=<your-gmail-username> -e MAIL_PASSWORD=<your-gmail-password> \
-    --link mysql:dbserver \
-    -e DATABASE_URL=mysql+pymysql://tas:332332332@dbserver/tas \
-    tas:latest
-
-4) docker run --name mysql -d -e MYSQL_RANDOM_ROOT_PASSWORD=yes \
-    -e MYSQL_DATABASE=tas -e MYSQL_USER=tas \
-    -e MYSQL_PASSWORD=332332332 \
-    mysql/mysql-server:5.7
+Ручной запуск отдельными контейнерами для БД и приложения
+1)Собираем образ docker build --tag=tas:latest .
+2)docker run --name mysql -e MYSQL_RANDOM_ROOT_PASSWORD=yes -e MYSQL_DATABASE=tas -e MYSQL_USER=tas -e MYSQL_PASSWORD=12345678 mysql/mysql-server:5.7
+3)docker run --name tas -p 8000:5000 --rm -e SECRET_KEY=may_the_force_be_this_you --link mysql:dbserver -e DATABASE_URL=mysql+pymysql://tas:12345678@dbserver/tas tas:latest
