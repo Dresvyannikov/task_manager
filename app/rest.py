@@ -34,6 +34,7 @@ from flask import send_from_directory
 
 '''
 VER_API = ['v1.0']  # список поддерживаемых версий
+NOT_SUPPORTED = "нет поддержки в данной версии api"
 
 
 def get_last_task(id_position):
@@ -53,7 +54,7 @@ def get_positions(version):
     if not control_version(version):
         response = {
             'status': 'error',
-            'message': 'нет поддерки данной версии {v}'.format(v=version),
+            'message': '{NOT_SUPPORTED} {v}'.format(NOT_SUPPORTED=NOT_SUPPORTED, v=version),
             'code': '400'
         }
         return jsonify(response)
@@ -78,7 +79,7 @@ def get_last_task_position(id_position, version):
     if not control_version(version):
         response = {
             'status': 'error',
-            'message': 'нет поддерки данной версии {v}'.format(v=version),
+            'message': '{NOT_SUPPORTED} {v}'.format(NOT_SUPPORTED=NOT_SUPPORTED, v=version),
             'code': '400'
         }
         return jsonify(response)
@@ -189,7 +190,7 @@ def get_all_states(version):
     if not control_version(version):
         response = {
             'status': 'error',
-            'message': 'нет поддерки данной версии {v}'.format(v=version),
+            'message': '{NOT_SUPPORTED} {v}'.format(NOT_SUPPORTED=NOT_SUPPORTED, v=version),
             'code': '400'
         }
         return jsonify(response)
@@ -218,7 +219,7 @@ def set_result_files(task_id, version):
     if not control_version(version):
         response = {
             'status': 'error',
-            'message': 'нет поддерки данной версии {v}'.format(v=version),
+            'message': '{NOT_SUPPORTED} {v}'.format(NOT_SUPPORTED=NOT_SUPPORTED, v=version),
             'code': '400'
         }
         return jsonify(response)
@@ -243,7 +244,7 @@ def get_file_info(id_position, file_name, version):
     if not control_version(version):
         response = {
             'status': 'error',
-            'message': 'нет поддерки данной версии {v}'.format(v=version),
+            'message': '{NOT_SUPPORTED} {v}'.format(NOT_SUPPORTED=NOT_SUPPORTED, v=version),
             'code': '400'
         }
         return jsonify(response)
@@ -279,7 +280,7 @@ def upload_files(id_position, file_name, version):
     if not control_version(version):
         response = {
             'status': 'error',
-            'message': 'нет поддерки данной версии {v}'.format(v=version),
+            'message': '{NOT_SUPPORTED} {v}'.format(NOT_SUPPORTED=NOT_SUPPORTED, v=version),
             'code': '400'
         }
         return jsonify(response)

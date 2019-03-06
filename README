@@ -13,6 +13,7 @@ set FLASK_APP=run.py
 Зависимости в файле requirements.txt.
 
 Ручной запуск отдельными контейнерами для БД и приложения
+
 1)Собираем образ docker build --tag=tas:latest .
 2)docker run --name mysql -e MYSQL_RANDOM_ROOT_PASSWORD=yes -e MYSQL_DATABASE=tas -e MYSQL_USER=tas -e MYSQL_PASSWORD=12345678 mysql/mysql-server:5.7
 3)docker run --name tas -p 8000:5000 --rm -e SECRET_KEY=may_the_force_be_this_you --link mysql:dbserver -e DATABASE_URL=mysql+pymysql://tas:12345678@dbserver/tas tas:latest
