@@ -172,7 +172,7 @@ def password_recovery():
             'code': False}
 
     if email_form.validate_on_submit() and email_form.submit_email.data:
-        msg = Message('Восстановление пароля', sender='Taskmanager@otdel332.avt', recipients=[email_form.email.data])
+        msg = Message('Восстановление пароля', sender=app.config['MAIL_USERNAME'], recipients=[email_form.email.data])
         code = get_code()
         messege = 'Код подтверждения:<b>{code}</b>'.format(code=code)
         msg.html = messege
@@ -188,7 +188,7 @@ def password_recovery():
         user = User.query.filter_by(code=code_form.code.data).first_or_404()
         if user.code == code_form.code.data:
             password = random.randint(1000, 9999)
-            msg = Message('Новый пароль', sender='Taskmanager@otdel332.avt',
+            msg = Message('Новый пароль', sender=app.config['MAIL_USERNAME'],
                           recipients=[user.email])
             messege = 'Ваш новый пароль:<b>{password}</b>'.format(password=password)
             msg.html = messege

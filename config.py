@@ -10,7 +10,7 @@ class Config:
 
     CSRF_ENABLE = True  # Предотвращение поддельных межсайтовых запросов
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'may-the-force-be-with-you'  # Секретный ключ для модуля werkzeug
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')  # Путь к БД
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or 'sqlite:///' + os.path.join(basedir, 'app.db')  # Путь к БД
     SQLALCHEMY_TRACK_MODIFICATIONS = False  # Флаг отключения функционала flask-sqlalchemy при изменении БД
 
     UPLOADED_PATH = os.getcwd() + '/upload'

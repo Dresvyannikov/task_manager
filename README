@@ -10,19 +10,10 @@ set FLASK_APP=run.py
     flask db
 Для запуска используй flask run
 
-Необходимые расширения:
-python3
-python3-flask
-python3-flask-wtf-master
-python3-flask-sqlalchemy
-python3-flask-migrate
-flask-login
+Зависимости в файле requirements.txt.
 
-flask-dropzone
-flask-bootstrap
-dominate
-visitor
+Ручной запуск отдельными контейнерами для БД и приложения
 
-flask-mail (для windows: pip install --no-deps lamson cherdet flask-mail)
-
-flask-restful
+1)Собираем образ docker build --tag=tas:latest .
+2)docker run --name mysql -e MYSQL_RANDOM_ROOT_PASSWORD=yes -e MYSQL_DATABASE=tas -e MYSQL_USER=tas -e MYSQL_PASSWORD=12345678 mysql/mysql-server:5.7
+3)docker run --name tas -p 8000:5000 --rm -e SECRET_KEY=may_the_force_be_this_you --link mysql:dbserver -e DATABASE_URL=mysql+pymysql://tas:12345678@dbserver/tas tas:latest

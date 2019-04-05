@@ -33,6 +33,8 @@ from flask import send_from_directory
 }
 
 '''
+VER_API = ['v1.0']  # список поддерживаемых версий
+NOT_SUPPORTED = "нет поддержки в данной версии api"
 
 
 def get_last_task(id_position):
@@ -40,35 +42,23 @@ def get_last_task(id_position):
                              Task.task_position == Position.query.get(int(id_position))).first()
 
 
-class Response:
-    status = ''
-    data = ''
-    message = ''
-    code = ''
-    response = {
-        'status': status,
-        'data': data,
-        'message': message,
-        'code': code
-    }
-
-    def __init__(self, status, data, message, code):
-        self.status = status
-        self.data = data
-        self.message = message
-        self.code = code
-
-    def get(self):
-        """
-        прежде чем юзать класс, протести
-        правильность выполнения уже существущих дынных и сделай вередачу файлов!!!
-        """
-        return jsonify(self.response)
+def control_version(v):
+    if v in VER_API:
+        return True
+    return False
 
 
-@app.route('/manager/api/v0.1/positions.json')
+@app.route('/manager/api/<version>/positions.json')
 @login_required
-def get_positions():
+def get_positions(version):
+    if not control_version(version):
+        response = {
+            'status': 'error',
+            'message': '{NOT_SUPPORTED} {v}'.format(NOT_SUPPORTED=NOT_SUPPORTED, v=version),
+            'code': '400'
+        }
+        return jsonify(response)
+
     positions = Position.query.all()
     data_positions = list()
     for position in positions:
@@ -82,9 +72,17 @@ def get_positions():
     return jsonify(response)
 
 
-@app.route('/manager/api/v0.1/positions/<id_position>/last_task.json', methods=['GET', 'PUT'])
+@app.route('/manager/api/<version>/positions/<id_position>/last_task.json', methods=['GET', 'PUT'])
 @login_required
-def get_last_task_position(id_position):
+def get_last_task_position(id_position, version):
+
+    if not control_version(version):
+        response = {
+            'status': 'error',
+            'message': '{NOT_SUPPORTED} {v}'.format(NOT_SUPPORTED=NOT_SUPPORTED, v=version),
+            'code': '400'
+        }
+        return jsonify(response)
 
     # фильт выбирает одну задачу из задач, которые не имеют статус done, указанной позиции.
     task = get_last_task(id_position)
@@ -186,9 +184,17 @@ def get_last_task_position(id_position):
 # TODO: при необходимости добавить обновление файлов
 
 
-@app.route('/manager/api/v0.1/all_states.json')
+@app.route('/manager/api/<version>/all_states.json')
 @login_required
-def get_all_states():
+def get_all_states(version):
+    if not control_version(version):
+        response = {
+            'status': 'error',
+            'message': '{NOT_SUPPORTED} {v}'.format(NOT_SUPPORTED=NOT_SUPPORTED, v=version),
+            'code': '400'
+        }
+        return jsonify(response)
+
     states = State.query.all()
     data = list()
     for state in states:
@@ -207,9 +213,17 @@ def get_all_states():
     return jsonify(response)
 
 
-@app.route('/manager/api/v1.0/tasks/<task_id>/app_result', methods=['GET', 'PUT', 'POST'])
+@app.route('/manager/api/<version>/tasks/<task_id>/app_result', methods=['GET', 'PUT', 'POST'])
 @login_required
-def set_result_files(task_id):
+def set_result_files(task_id, version):
+    if not control_version(version):
+        response = {
+            'status': 'error',
+            'message': '{NOT_SUPPORTED} {v}'.format(NOT_SUPPORTED=NOT_SUPPORTED, v=version),
+            'code': '400'
+        }
+        return jsonify(response)
+
     if request.method == 'POST':
         # создание результата ДИ
             files = request.files
@@ -224,11 +238,18 @@ def set_result_files(task_id):
     return ''
 
 
-@app.route('/manager/api/v1.0/positions/<id_position>/last_task/files/<file_name>/file_info.json')
+@app.route('/manager/api/<version>/positions/<id_position>/last_task/files/<file_name>/file_info.json')
 @login_required
-def get_file_info(id_position, file_name):
-    # передать информацию о файле
+def get_file_info(id_position, file_name, version):
+    if not control_version(version):
+        response = {
+            'status': 'error',
+            'message': '{NOT_SUPPORTED} {v}'.format(NOT_SUPPORTED=NOT_SUPPORTED, v=version),
+            'code': '400'
+        }
+        return jsonify(response)
 
+    # передать информацию о файле
     response = {
         'status': 'fail',
         'message': 'not found file {name}'.format(name=file_name),
@@ -243,6 +264,7 @@ def get_file_info(id_position, file_name):
             response = {
                 'status': 'success',
                 'data': {
+                    'name': file_name,
                     'type': file.type,
                     'size': file.size,
                     'md5sum': file.md5sum
@@ -252,16 +274,19 @@ def get_file_info(id_position, file_name):
     return jsonify(response)
 
 
-@app.route('/manager/api/v1.0/positions/<id_position>/last_task/files/<file_name>', methods=['GET', 'PUT'])
+@app.route('/manager/api/<version>/positions/<id_position>/last_task/files/<file_name>', methods=['GET', 'PUT'])
 @login_required
-def upload_files(id_position, file_name):
+def upload_files(id_position, file_name, version):
+    if not control_version(version):
+        response = {
+            'status': 'error',
+            'message': '{NOT_SUPPORTED} {v}'.format(NOT_SUPPORTED=NOT_SUPPORTED, v=version),
+            'code': '400'
+        }
+        return jsonify(response)
     # отдать файл
     if request.method == 'GET':
         task = get_last_task(id_position)
         for file in task.files_id:
             if file.name == file_name:
                 return send_from_directory(file.path, file.name)
-    # перезаписать файл
-    if request.method == 'PUT':
-        # TODO: при необходимости оформить как form с файлом
-        pass
